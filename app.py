@@ -2,9 +2,6 @@ import flask
 from flask import Flask, request
 import xgboost
 import pandas as pd
-
-bst = xgboost.Booster({'nthread' : 4})
-bst.load_model('airbnb_model2.bin')
     
 app = flask.Flask(__name__, template_folder='templates')
 
@@ -16,7 +13,17 @@ def main():
         print("connection head")
         content = request.get_json()
         print(content)
-
+        
+        bst = xgboost.Booster({'nthread' : 4})
+        
+        location = content['Location']
+        if location == 'Chicago':
+            bst.load_model('chicago_model.bin')
+        elif location == 'New York':
+            bst.load_model('newyork_model.bin')
+        elif location == 'Los Angeles':
+            bst.load_model('la_model.bin')
+            
         all_property_types = ['property_type_Apartment','property_type_Hotel','property_type_House',
                               'property_type_Other']
         all_room_types = ['room_type_Enter home/apt','room_type_Hotel room','room_type_Private room',
